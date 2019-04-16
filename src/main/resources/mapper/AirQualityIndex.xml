@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.szxs.dao.AirQualityIndexDao">
+
+    <resultMap id="AirQualityIndexsMap" type="AirQualityIndex">
+        <id property="id" column="id" />
+        <result property="districtId" column="districtId" />
+        <result property="monitorTime" column="monitorTime" />
+        <result property="pm10" column="pm10" />
+        <result property="pm25" column="pm25" />
+        <result property="monitoringStation" column="monitoringStation" />
+        <result property="lastModifyTime" column="lastModifyTime" />
+        <association property="district" javaType="District">
+            <result property="name" column="name" />
+        </association>
+    </resultMap>
+
+    <select id="queryAirQualityIndexs" resultMap="AirQualityIndexsMap">
+        select a.*,d.name from air_quality_index a,district d where a.districtId = d.id
+        <if test="districtId > 0">
+            AND districtId = #{districtId}
+        </if>
+        order by a.id desc
+        limit #{pageOffset},#{pageSize}
+    </select>
+
+    <select id="queryRows" resultType="_int">
+        select count(1) from air_quality_index
+        <where>
+            <if test="districtId > 0">
+                AND districtId = #{districtId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addAirQualityIndex">
+        insert into air_quality_index values (null ,#{districtId},#{monitorTime},#{pm10},#{pm25},#{monitoringStation},now() )
+    </insert>
+
+    <select id="queryAirQualityIndexById" resultMap="AirQualityIndexsMap">
+        select a.*,d.name from air_quality_index a,district d where a.districtId = d.id and a.id = #{id}
+    </select>
+    
+    <update id="updateAirQualityIndex">
+        update air_quality_index
+        <set>
+            <if test="districtId > 0">
+                districtId = #{districtId},
+            </if>
+            <if test="monitorTime != null">
+                monitorTime = #{monitorTime},
+            </if>
+            <if test="pm10 > 0">
+                pm10 = #{pm10},
+            </if>
+            <if test="pm25 > 0">
+                pm25 = #{pm25},
+            </if>
+            <if test="monitoringStation != null and monitoringStation != '' ">
+                monitoringStation = #{monitoringStation},
+            </if>
+                lastModifyTime = now(),
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAirQualityIndex" >
+        delete from air_quality_index where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--扫描所有控制器-->
+    <context:component-scan base-package="com.szxs.controller,com.szxs.service" />
+
+    <!--视图解析器对象-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <!--开启springmvc框架注解的支持   此处要把转换器配置上来-->
+    <mvc:annotation-driven />
+    <!--放过静态资源-->
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/calendar/**" location="/calendar/"/>
+
+    <import resource="spring-dao.xml" />
+</beans>

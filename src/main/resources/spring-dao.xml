@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:db.properties" />
+    </bean>
+
+    <!--数据源-->
+    <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource" >
+        <property name="url" value="${DB_URL}"/>
+        <property name="driverClassName" value="${DB_DRIVER}"/>
+        <property name="username" value="${DB_NAME}"/>
+        <property name="password" value="${DB_PWD}"/>
+    </bean>
+
+    <bean name="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--加载mybatis的配置文件-->
+        <property name="configLocation" value="classpath:mybatis.xml" />
+        <!--扫描mapper包下的xml文件,即映射文件-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml" />
+        <!--给entity包下的类取别名，默认是类名-->
+        <property name="typeAliasesPackage" value="com.szxs.entity" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.szxs.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSession" />
+    </bean>
+
+
+</beans>
